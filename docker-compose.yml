@@ -1,0 +1,32 @@
+# docker stack deploy --compose-file docker-compose.yml reflector-oidc
+version: '3.6'
+
+services:
+  httpd:
+    image: reflector-oidc-https:1
+    volumes:
+      - ${PWD}/public-html:/var/www/html
+      - ${PWD}/src/sites-available/oidc-apache-site.conf:/etc/apache2/sites-available/oidc-apache-site.conf
+      - ${PWD}/src/mods-available/auth_openidc.conf:/etc/apache2/mods-available/auth_openidc.conf
+      - ${PWD}/logs:/var/log/apache2/
+      - ${PWD}/letsencrypt/certs/${APACHE_FQDN}.crt:/etc/ssl/certs/server.crt
+      - ${PWD}/letsencrypt/private/${APACHE_FQDN}.key:/etc/ssl/private/server.key
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.httpd-oidc.rule=Host(`${APACHE_FQDN}`)
+        - traefik.http.routers.httpd-oidc.entrypoints=websecure
+        - traefik.http.services.httpd-oidc.loadbalancer.server.port=443
+        - traefik.http.services.httpd-oidc.loadbalancer.server.scheme=https
+        - traefik.http.services.httpd-oidc.loadbalancer.passhostheader=true
+        - traefik.http.routers.httpd-oidc.tls=true
+        - traefik.http.routers.httpd-oidc.tls.certresolver=letsencrypt
+        - traefik.http.middlewares.httpd-oidc.headers.sslredirect=true
+        - traefik.docker.network=traefik-public
+
+networks:
+  traefik-public:
+    external: true

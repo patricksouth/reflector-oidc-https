@@ -1,0 +1,28 @@
+########################################################################################
+##
+## OIDC Settings
+##
+########################################################################################
+##
+## See auth_openidc.conf.original for all config items and descriptions.
+##
+
+##  Typical host configuration items
+# (Mandatory)
+OIDCRedirectURI https://<host>/secure/redirect_uri
+OIDCCryptoPassphrase "/bin/bash -c 'head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32'"
+
+#
+# All other entries below this are optional though some may be required in a
+# particular setup e.g. OAuth 2.0 Resource Server vs. OpenID Connect Relying Party
+#
+
+OIDCProviderMetadataURL https://<OP Host>/.well-known/openid-configuration
+OIDCScope "openid email profile"
+OIDCUserInfoRefreshInterval 15
+OIDCResponseType "code"
+OIDCClientID https://<host>
+OIDCClientSecret you_should_really_choose_your_own_value_here_....
+OIDCPKCEMethod S256
+OIDCCookieSameSite On
+OIDCPassClaimsAs both latin1
