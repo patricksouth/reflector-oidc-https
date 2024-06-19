@@ -1,7 +1,7 @@
 # PHP image source.
 # https://github.com/docker-library/docs/blob/master/php/README.md
 
-FROM php:8.3-apache
+FROM php:8.3.8-apache
 LABEL BUILD docker build -t reflector-oidc-https:1 .
 
 RUN apt update && apt dist-upgrade -y && \
