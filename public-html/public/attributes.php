@@ -10,9 +10,9 @@
     text-align: left;
     vertical-align: top;
   }
-  th {
-    width: 250px;
-  }
+#  th {
+#    width: 250px;
+#  }
   td {
     max-width: 800px;
     word-wrap: break-word;
