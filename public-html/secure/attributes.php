@@ -27,16 +27,19 @@
   }
 </style>
 <body>
+
 <h1>Attribute Reflector - OIDC</h1>
 <a href="../public/attributes.php"><b>Access the unprotected page</b></a> <br><br>
 
 <table> <tr> <th>Attributes</th> <th>Values</th> </tr>
 
+<!-- error_reporting(E_ALL & ~E_NOTICE);  -->
 <?php error_reporting(0);
 
 $list = [
   'REMOTE_USER',
   'OIDC_CLAIM_eduperson_affiliation',
+  'OIDC_CLAIM_eduPersonAffiliation',
   'OIDC_CLAIM_eduperson_scoped_affiliation',
   'OIDC_CLAIM_email',
   'OIDC_CLAIM_eppn',
@@ -69,6 +72,7 @@ $list = [
   'OIDC_CLAIM_cert_subject_dn',
 #  'OIDC_CLAIM_special1',
   'OIDC_CLAIM_uid',
+  'OIDC_CLAIM_eduPersonOrcid'
 #  'OIDC_CLAIM_special2',
 #  'OIDC_CLAIM_special3',
 ];
@@ -141,7 +145,7 @@ foreach ($list as $claim) {
 ?>
 
 <hr/>
-<!-- Prints all info   (INFO_VARIABLES)
+<!-- Prints all info   (INFO_VARIABLES) 
 <?php
  phpinfo(INFO_VARIABLES);
 ?>
