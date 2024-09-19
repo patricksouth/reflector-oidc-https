@@ -79,7 +79,7 @@ $list = [
 
 function isMemberOf_list ($val) {
   array_walk($val, function(&$item, $idx) {
-    echo $item . "<br>";
+    print $item . "<br>";
   } );
 }
 // Prints the above claims with their values.
