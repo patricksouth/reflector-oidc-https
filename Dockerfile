@@ -1,7 +1,7 @@
 # PHP image source.
 # https://github.com/docker-library/docs/blob/master/php/README.md
 
-FROM php:8.3.11-apache
+FROM php:8.4-apache
 
 RUN apt update && apt dist-upgrade -y && \
   apt install -y \
