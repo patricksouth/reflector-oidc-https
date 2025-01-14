@@ -1,11 +1,11 @@
-IMAGE_NAME=reflector-oidc-https
+IMAGE_NAME=reflector-oidc
 TAG=1
 
 build:
 	docker build -t $(IMAGE_NAME):$(TAG) .
 
 start:
-	./deploy_reflector_oidc.sh #	docker compose up -d
+	./deploy_reflector_oidc.sh
 
 stop:
 	docker stack rm reflector-oidc
@@ -17,5 +17,4 @@ restart:
 
 log:
 	docker service logs -f reflector-oidc_httpd
-
 

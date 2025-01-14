@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   httpd:
-    image: reflector-oidc-https:1
+    image: reflector-oidc:1
     volumes:
       - ${PWD}/public-html:/var/www/html
       - ${PWD}/src/sites-available/oidc-apache-site.conf:/etc/apache2/sites-available/oidc-apache-site.conf
