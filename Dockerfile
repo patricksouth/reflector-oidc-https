@@ -10,11 +10,13 @@ RUN apt update && apt dist-upgrade -y && \
   wget \
   libhiredis0.14 \
   libcjose0 \
-  libapache2-mod-auth-openidc && \
+  libapache2-mod-auth-openidc \
+  cron \
+  logrotate && \
   rm -rf /var/lib/apt/lists/* && \
   touch /etc/apache2/sites-available/oidc-apache-site.conf
 
-COPY src/mods-available/ssl.conf /etc/apache2/mods-available/ssl.conf
+COPY src/ssl.conf /etc/apache2/mods-available/ssl.conf
 
 RUN a2enmod rewrite && \
     a2enmod auth_openidc && \

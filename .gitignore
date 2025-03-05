@@ -49,7 +49,8 @@ Thumbs.db
 *.wmv
 
 # Config
-src/mods-available/auth_openidc.conf
+src/auth_openidc.conf
 reflector.env
 public-html/secure/attribute_map.html
 letsencrypt
+logs

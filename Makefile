@@ -12,7 +12,7 @@ stop:
 
 restart:
 	docker stack rm reflector-oidc
-	sleep 10
+	sleep 5
 	./deploy_reflector_oidc.sh
 
 log:

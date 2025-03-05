@@ -14,15 +14,40 @@ source reflector.env
 # You can use your own certs by placing them in the ./letsencrypt/{certs,private} directories respectively, before starting this services.
 # Otherwise, let this script create the symlink to the ${LETSENCRYPT} location (specified in the reflector.env file).
 # See README.md for details on the Traefik proxy.
+#
 
-if [[ ! -d ./letsencrypt && -d ${LETSENCRYPT} ]]; then
+if [[ -z ${LETSENCRYPT} ]]; then
+  echo
+  echo "       LetsEncrypt environment variable not set!"
+  echo
+  exit
+fi
+
+if [[ ! -d ${LETSENCRYPT} ]]; then
+  echo
+  echo "      LetsEncrypt target directory not available!"
+  echo
+  exit
+fi
+
+if [[ ! -h ./letsencrypt ]]; then
   ln -s ${LETSENCRYPT} ./letsencrypt
+  echo
+  echo "       Adding a symlink for LetsEncrypt."
+  echo
 fi
 
 # Extract the certs managed by Traefik stored in acme.json
 if [[ -e ./letsencrypt/acme.json ]]; then
   if [ ! -x "$(which jq)" ]; then
-    yum update -y && yum -y install jq && yum clean all
+    echo 
+    echo "Please install 'jq' a command-line JSON processor, using"
+    echo
+    echo "     yum -y install jq -y"
+    echo "OR"
+    echo "     apt install jq -y"
+    echo
+    exit
   fi
   pushd ./letsencrypt
   ./dumpcerts.acme.v2.sh ./acme.json ./
@@ -39,7 +64,8 @@ if [[ ! -e letsencrypt/certs/${APACHE_FQDN}.crt || ! -e letsencrypt/private/${AP
 fi
 
 if [ ! -d "logs" ]; then
-  mkdir {logs,tmp}
+  mkdir logs
+
 fi
 
 if [[ -n $(docker stack ls --format '{{.Name}}' | grep reflector-oidc) ]]; then
@@ -53,6 +79,6 @@ fi
 docker stack deploy --compose-file docker-compose.yml reflector-oidc
 
 echo
-echo "    Want to display logs, use"
-echo " docker service logs -f reflector-oidc_httpd"
+echo "    Want to display logs, use: make log-reflector"
 echo
+echo "    Want to view OIDC logs use: tail -f logs/error.log"

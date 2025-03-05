@@ -1,35 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<title>OIDC Reflector</title>
+<link rel="stylesheet" href="../public/styles.css">
 </head>
-<style>
-  table, th, tr, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-    padding: 3px;
-    text-align: left;
-    vertical-align: top;
-  }
-#  th {
-#    width: 250px;
-#  }
-  td {
-    max-width: 800px;
-    word-wrap: break-word;
-  }
-  .novalue {
-    font-weight: bold;
-    color: red;
-  }
-  .token {
-    font-weight: bold;
-    color: limegreen;
-  }
-</style>
 <body>
 
 <h1>Attribute Reflector - OIDC</h1>
 <a href="../public/attributes.php"><b>Access the unprotected page</b></a> <br><br>
+<a href="/secure/redirect_uri?logout=https%3A%2F%2Fclients.bio.ausfed.net">Logout</a>
+
+<a href="/secure/redirect_uri?logout=https://clients.bio.ausfed.net/">Logout</a>
+
 
 <table> <tr> <th>Attributes</th> <th>Values</th> </tr>
 
@@ -59,8 +41,7 @@ $list = [
   'HTTPS',
   'OIDC_CLAIM_acr',
   'OIDC_CLAIM_aud',
-  'SSL_TLS_SNI',
-  'OIDC_CLAIM_cert_subject_dn',
+  'OIDC_CLAIM_terms_and_conditions',
 ];
 
 function isMemberOf_list ($val) {
@@ -72,7 +53,8 @@ function isMemberOf_list ($val) {
 
 function token_explode($val, $type) {
   print ("<table> <tr> <th>$type</th> <th>Values</th> </tr>");
-  array_walk($val, function(&$item ,$idx) {
+  foreach ($val as $idx => $item) {
+  //array_walk($val, function(&$item ,$idx) {
     if ( is_array($item) ) {
       print ("<tr><td>" . $idx . "</td><td>");
       token_explode($item, $idx);
@@ -80,7 +62,7 @@ function token_explode($val, $type) {
     } else {
       print ("<tr><td>" . $idx . "</td><td>" . $item . "</td></tr>");
     }
-  } );
+  } // );
   print ("</table>");
 }
 
@@ -100,8 +82,8 @@ foreach ($list as $claim) {
         print ($_SERVER['OIDC_access_token'] . "<br>"); 
 
         if ( ! is_null($_SERVER['OIDC_access_token']) ) {
-          $token1=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER['OIDC_access_token'])[1]))));
-          $token0=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER['OIDC_access_token'])[0]))));
+          $token1=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER[$claim])[1]))));
+          $token0=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER[$claim])[0]))));
 
           print ("<br>");
           print ("<div class='token'>DECODED TOKEN</strong> </div>");
@@ -120,6 +102,42 @@ foreach ($list as $claim) {
           } else {
             print ("<br>" . "NOT a JWT....");
           }
+	}
+
+    } elseif ( $claim == "OIDC_CLAIM_terms_and_conditions" ) {
+        print ("<div class='token'>Terms and Conditions List</div>" );
+	
+	print ($_SERVER['OIDC_CLAIM_terms_and_conditions']);
+	if ( isset($_SERVER[$claim]) ) {
+	  print ( $_SERVER[$claim][0] . "<br>");
+	  print ( var_dump($_SERVER[$claim][0]) );
+	  print ( "<br>>-----<<br>" );
+	  $t1 = explode('.', $_SERVER[$claim]);
+//	  $token2 = base64_decode($t1 ,true);
+//	  print ("token2: " . $token2);
+	}
+
+        if ( ! is_null($_SERVER[$claim]) ) {
+          $token1=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER[$claim])[1]))));
+          $token0=json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $_SERVER[$claim])[0]))));
+
+          print ("<br>");
+          print ("<div class='token'>T&C Claim TOKEN</strong> </div>");
+
+          if ( ! is_null($token0) ) {
+            print ("<b>[Token Header]</b>");
+            token_explode($token0, "Header Artefacts");
+          } else {
+            print ("NOT a decodeable Access Token");
+          }
+
+          if ( ! is_null($token1) ) {
+            print ("<br>");
+            print ("<b>Token Data</b>");
+            token_explode($token1, "Data Artefacts");
+          } else {
+            print ("<br>" . "NOT a JWT....");
+          }
         }
 
     } else {
@@ -129,12 +147,13 @@ foreach ($list as $claim) {
   print ("</td></tr>");
 }
 ?>
-
-<hr/>
+</tbody> </table>
+<div class="makeleft">
 <!-- Prints all info   (INFO_VARIABLES)  -->
 <?php
  phpinfo(INFO_VARIABLES);
 ?>
+</div>
 <!-- -->
 </body>
 </html>

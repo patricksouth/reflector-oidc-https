@@ -41,15 +41,19 @@ Copy ```reflector.env.default``` to ```reflector.env``` and update the following
 Build the Docker image with: 
 
 ```
-./build.sh
+make build
 ```
 
 Deploy the service with:
 
 ```
-./deploy_reflector_oidc.sh
+make start
+```
+Stop the service with:
+```
+make stop
 ```
 
 ## Notes
 
-If you wish, set the Apache servername in ```src/sites-available/oidc-apache-site.conf```.
+If you wish, set the Apache servername in ```src/oidc-apache-site.conf```.

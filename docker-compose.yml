@@ -5,11 +5,13 @@ services:
     image: reflector-oidc:1
     volumes:
       - ${PWD}/public-html:/var/www/html
-      - ${PWD}/src/sites-available/oidc-apache-site.conf:/etc/apache2/sites-available/oidc-apache-site.conf
-      - ${PWD}/src/mods-available/auth_openidc.conf:/etc/apache2/mods-available/auth_openidc.conf
+      - ${PWD}/src/oidc-apache-site.conf:/etc/apache2/sites-available/oidc-apache-site.conf
+      - ${PWD}/src/auth_openidc.conf:/etc/apache2/mods-available/auth_openidc.conf
+      - ${PWD}/src/security.conf:/etc/apache2/conf-available/security.conf
       - ${PWD}/logs:/var/log/apache2/
       - ${PWD}/letsencrypt/certs/${APACHE_FQDN}.crt:/etc/ssl/certs/server.crt
       - ${PWD}/letsencrypt/private/${APACHE_FQDN}.key:/etc/ssl/private/server.key
+      - ${PWD}/src/other-vhosts-access-log.conf:/etc/apache2/conf-available/other-vhosts-access-log.conf
     networks:
       - traefik-public
     deploy:
